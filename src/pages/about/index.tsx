@@ -2,8 +2,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 import Style from "./index.module.css";
-
-export default () => {
+export default function About() {
   const router = useRouter();
 
   return (
