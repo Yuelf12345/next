@@ -10,6 +10,11 @@ export default function Pages() {
             <span>About</span>
           </Link>
         </li>
+        <li>
+          <Link prefetch href="/data">
+            <span>Data</span>
+          </Link>
+        </li>
       </ul>
     </nav>
   );

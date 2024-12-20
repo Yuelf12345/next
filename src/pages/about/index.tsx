@@ -1,7 +1,17 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-
 import Style from "./index.module.css";
+
+// Router.beforePopState(({ url, as, options }) => {
+//   console.log(url, as, options);
+  
+//   if (as !== "/") {
+
+//     return false;
+//   }
+//   return true;
+// });
+
 export default function About() {
   const router = useRouter();
   const avatar = "/static/avatar.png";
@@ -18,7 +28,7 @@ export default function About() {
           <p>Query参数: {JSON.stringify(router.query)}</p>
         </div>
       </Link>
-      <button onClick={() => router.push("/about/3")}>here to 3</button>
+      <button onClick={() => router.back()}>go Back</button>
     </div>
   );
 }
