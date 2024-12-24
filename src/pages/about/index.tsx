@@ -19,7 +19,8 @@ export default function About() {
     <div className={Style.container}>
       <p>about page</p>
       <img src={avatar} width={100} height={100} alt="avatar" />
-      <Link href="/about/1">
+      {/* prefetch 预加载 */}
+      <Link prefetch  href="/about/1">
         <p>here to 1</p>
       </Link>
       <Link href={{ pathname: "/about", query: { id: "2" } }}>
