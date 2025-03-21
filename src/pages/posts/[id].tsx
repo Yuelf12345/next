@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Avatar, Spin, message, Typography } from "antd";
+import { Avatar, Spin, Input, message, Typography, Button } from "antd";
 import { PostType } from "../../types/post";
 
 const { Title, Paragraph } = Typography;
@@ -10,7 +10,10 @@ interface PostDetailProps {
 
 const PostDetail: React.FC<PostDetailProps> = ({ post }) => {
   const [loading, setLoading] = useState(true);
+  const [isEdit, setIsEdit] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [title, setTitle] = useState(post.title);
+  const [body, setBody] = useState(post.body);
 
   useEffect(() => {
     if (post) {
@@ -39,7 +42,37 @@ const PostDetail: React.FC<PostDetailProps> = ({ post }) => {
   if (error) {
     return <div>Error: {error}</div>;
   }
-
+  const handleEdit = async () => {
+    setIsEdit(!isEdit);
+    if (isEdit) {
+      try {
+        const response = await fetch(
+          `https://jsonplaceholder.typicode.com/posts/${post.id}`,
+          {
+            method: "PATCH",
+            body: JSON.stringify({
+              title,
+              body
+            }),
+            headers: {
+              "Content-type": "application/json; charset=UTF-8",
+            },
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const updatedPost: PostType = await response.json();
+        console.log("Updated Post:", updatedPost);
+        message.success("修改成功");
+        setIsEdit(false);
+      } catch (err) {
+        console.error("Error updating post:", { cause: err });
+        message.error("修改失败");
+      }
+      message.success("修改成功");
+    }
+  };
   return (
     <div style={{ padding: "20px" }}>
       <Avatar
@@ -47,8 +80,33 @@ const PostDetail: React.FC<PostDetailProps> = ({ post }) => {
         size={64}
         style={{ marginBottom: "20px" }}
       />
-      <Title level={2}>{post.title}</Title>
-      <Paragraph>{post.body}</Paragraph>
+      {isEdit ? (
+        <>
+          <Input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            style={{ marginBottom: "10px" }}
+          />
+          <Input.TextArea
+            value={body}
+            onChange={(e) => setBody(e.target.value)}
+            rows={4}
+            style={{ marginBottom: "10px" }}
+          />
+        </>
+      ) : (
+        <>
+          {" "}
+          <Title level={2}>{title}</Title>
+          <Paragraph>{body}</Paragraph>
+        </>
+      )}
+      <Button style={{ marginRight: "20px" }} type="primary" onClick={handleEdit}>
+        {isEdit ? "保存" : "修改"}
+      </Button>
+      <Button type="primary" onClick={() => window.history.back()}>
+        返回
+      </Button>
     </div>
   );
 };
